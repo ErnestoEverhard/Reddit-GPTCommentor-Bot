@@ -2,7 +2,7 @@
 
 ## Overview
 
-These scripts are designed to create a Reddit bot powered by OpenAI's GPT-3.5-turbo model. The bot monitors specified subreddits for certain keywords or phrases, and generates sarcastic responses to comments containing those triggers. The bot is able to handle multiple triggers and can be configured to respond to comments containing any of the listed triggers.
+These scripts are designed to create a Reddit bot powered by OpenAI's GPT-3.5-turbo model. The bot monitors specified subreddits for certain keywords or phrases, and generates responses to comments containing those triggers. The bot is able to handle multiple triggers and can be configured to respond to comments containing any of the listed triggers.
 
 ## Prerequisites
 
