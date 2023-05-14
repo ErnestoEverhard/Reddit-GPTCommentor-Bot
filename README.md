@@ -40,3 +40,6 @@ The scripts include a backoff mechanism. If an error occurs during the monitorin
 ## Usage
 
 The scripts are designed to be run as standalone Python scripts. To start the bot, simply run the scripts in your Python environment. The bot will begin monitoring the specified subreddits for the trigger phrases and respond to comments accordingly.
+
+## Links. 
+Instructions for how to create your reddit App https://new.pythonforengineers.com/blog/build-a-reddit-bot-part-1/

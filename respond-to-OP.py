@@ -23,6 +23,9 @@ max_tokens = 1000
 subreddit_name = "Powershell+Sysadmin+WindowsServer+Windows+Windows10+WindowsServer+bottesting"
 system_message = "You are a PowerShell expert respond to this Reddit post with a script or helpful advice. Before responding please consider that the approach the original poster is taking is not necessarily the best approach. If you are going to suggest a different approach please explain why. Use Reddit code blocks, make your response readable but use as few API tokens as possible. If possible use -whatif on any command that would modify anything."
 triggers = ["!newtrigger1", "!newtrigger2", "!newtrigger3"]
+triggers_str = ', '.join(triggers)  # This will create a string with all the triggers separated by a comma and a space.
+disclaimer = f"By using one of the following triggers: {triggers_str}, you have requested a response to the OP regarding their question. This bot is in testing."
+
 
 def generate_response(prompt):
     messages = [
@@ -83,15 +86,15 @@ def monitor_subreddit_comments():
             response = generate_response(prompt)
     
             # Add disclaimer to the response
-            response_with_disclaimer = f"By using \"!PowershellGPT\" you have requested a response to the OP regarding their Powershell question. This bot is in testing.\n\n---\n{response}"
-            
+            response_with_disclaimer = f"{disclaimer}\n\n---\n{response}"
+
             # Reply to the comment
             comment.reply(response_with_disclaimer)
             post_url = f"https://www.reddit.com{comment.submission.permalink}"
             print(f"Replied to comment: {comment.id} on post: {post_url}")
 
-            # Sleep for 10 seconds before checking for new comments
-            time.sleep(10)
+            # Sleep for 120 seconds before checking for new comments
+            time.sleep(120)
 
 def count_tokens(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")

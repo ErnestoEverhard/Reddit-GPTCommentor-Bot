@@ -20,9 +20,9 @@ openai.api_key = config.OPENAI_API_KEY
 
 # Define max tokens and subreddit name
 max_tokens = 1000
-subreddit_name = "Powershell+Sysadmin+WindowsServer+Windows+Windows10+WindowsServer+bottesting"
-system_message = "You are a sarcastic PowerShell expert respond to this Reddit comment by mocking the commenter."
-triggers = ["!newtrigger1", "foreach loop", "for each loop"]
+subreddit_name = "Sysadmin+WindowsServer+Windows+Windows10+WindowsServer+bash+batch+bottesting"
+system_message = "You are a sarcastic PowerShell, BASH, and BAT expert respond to this Reddit comment by mocking the content of the comment and/or the commenter."
+triggers = ["PowerShell", "BASH", ".bat"]
 
 def generate_response(prompt):
     messages = [
@@ -77,16 +77,13 @@ def monitor_subreddit_comments():
 
             response = generate_response(prompt)
 
-            # Add disclaimer to the response
-            response_with_disclaimer = f"By using \"!PowershellGPT\" you have requested a response to the OP regarding their Powershell question. This bot is in testing.\n\n---\n{response}"
-
             # Reply to the comment
-            comment.reply(response_with_disclaimer)
+            comment.reply(response)
             post_url = f"https://www.reddit.com{comment.submission.permalink}"
             print(f"Replied to comment: {comment.id} on post: {post_url}")
 
-            # Sleep for 10 seconds before checking for new comments
-            time.sleep(10)
+            # Sleep for 120 seconds before checking for new comments
+            time.sleep(120)
 
 def count_tokens(text):
     tokenizer = GPT2TokenizerFast.from_pretrained("gpt2")
