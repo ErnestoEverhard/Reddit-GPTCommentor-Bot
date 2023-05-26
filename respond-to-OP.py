@@ -18,13 +18,13 @@ reddit = praw.Reddit(
 # Initialize OpenAI API
 openai.api_key = config.OPENAI_API_KEY
 
-# Define max tokens and subreddit name
+# Define max tokens, API system message, subreddits to monitor, and triggers.
 max_tokens = 1000
 subreddit_name = "Powershell+Sysadmin+WindowsServer+Windows+Windows10+WindowsServer+bottesting"
 system_message = "You are a PowerShell expert respond to this Reddit post with a script or helpful advice. Before responding please consider that the approach the original poster is taking is not necessarily the best approach. If you are going to suggest a different approach please explain why. Use Reddit code blocks, make your response readable but use as few API tokens as possible. If possible use -whatif on any command that would modify anything."
 triggers = ["!newtrigger1", "!newtrigger2", "!newtrigger3"]
 triggers_str = ', '.join(triggers)  # This will create a string with all the triggers separated by a comma and a space.
-disclaimer = f"By using one of the following triggers: {triggers_str}, you have requested a response to the OP regarding their question. This bot is in testing."
+disclaimer = f"By using one of the following triggers: {triggers_str}, you have requested a response to the OP regarding their question."
 
 
 def generate_response(prompt):

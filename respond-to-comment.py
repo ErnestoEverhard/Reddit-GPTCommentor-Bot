@@ -5,6 +5,7 @@ import time  # Importing the time module to manage the loop
 import random  # Importing the random module for the random backoff time
 from transformers import GPT2TokenizerFast  # Importing the transformer for tokenization
 from threading import Thread  # Importing threading module to run bot in background
+from datetime import datetime, timedelta
 
 # Initialize Reddit API
 reddit = praw.Reddit(
@@ -20,9 +21,10 @@ openai.api_key = config.OPENAI_API_KEY
 
 # Define max tokens and subreddit name
 max_tokens = 1000
-subreddit_name = "Sysadmin+WindowsServer+Windows+Windows10+WindowsServer+bash+batch+bottesting"
-system_message = "You are a sarcastic PowerShell, BASH, and BAT expert respond to this Reddit comment by mocking the content of the comment and/or the commenter."
-triggers = ["PowerShell", "BASH", ".bat"]
+subreddit_name = "bottesting+dog+cat+"
+system_message = "You are teenage animal lover that is obsessed with cats, dogs, and other cute pets. Respond by agreeing with the comment but adding something else that you find cute about the topic, don't sound too formal in your response, use slang or cutesie phrases. Do not use the phrase 'I completely agree!'"
+triggers = ["1000/10", "10/10", "I love how cats", "I love how dogs"]
+replied_posts = set()
 
 def generate_response(prompt):
     messages = [
@@ -47,27 +49,39 @@ def generate_response(prompt):
 
     return response.choices[0].message.content
 
-# Function to check if the bot has already replied to the comment
-def has_already_replied(comment):
+# Function to check if the bot has already replied to a post
+def has_already_replied_to_post(post):
     bot_username = config.REDDIT_USERNAME
-    comment.refresh()
-    for reply in comment.replies:
-        if reply.author and reply.author.name == bot_username:
+    post.comments.replace_more(limit=0)  # replace MoreComments objects, limit=0 means all of them
+    for comment in post.comments.list():  # list() flattens the comment tree
+        if comment.author and comment.author.name.lower() == bot_username.lower():
             return True
     return False
 
 # Function to check if comment contains any of the triggers
 def contains_trigger(comment):
-    return any(trigger in comment.body.lower().strip() for trigger in triggers)
+    return any(trigger.lower().strip() in comment.body.lower().strip() for trigger in triggers)
 
 # Function to monitor subreddit comments
 def monitor_subreddit_comments():
-    print(f"Running")    
+    print(f"Running")
     subreddit = reddit.subreddit(subreddit_name)
+
+    # Get current time and subtract 24 hours to get "start of day"
+    now = datetime.now()
+    start_of_day = now - timedelta(hours=now.hour, minutes=now.minute, seconds=now.second, microseconds=now.microsecond)
 
     # Monitor new comments
     for comment in subreddit.stream.comments():
-        if contains_trigger(comment) and not has_already_replied(comment):
+        # Convert the comment's creation time from UNIX timestamp to a datetime object
+        comment_time = datetime.fromtimestamp(comment.created_utc)
+
+        # Skip this comment if it's on a post that was created before today
+        if comment_time < start_of_day:
+            continue
+
+        if contains_trigger(comment) and not has_already_replied_to_post(comment.submission):
+            print(f"Trigger found in {comment.submission.permalink}")
             prompt = comment.body  # use comment body as the prompt
 
             # Check if the prompt is over the token limit
